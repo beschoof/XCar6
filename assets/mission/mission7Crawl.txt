@@ -1,0 +1,15 @@
+# Mission 7 for Crawl
+# Syntax zB: move, v20, r0, t10, s1
+# init v 101: Seben, v 102: Crawler
+
+init, v 102
+wait, t 3
+move, v 20, r 0, t 10, s 1
+wait, t 3
+move, v 20, r 0, t 10, s 1
+wait, t 3
+move, v 10, r 5, t 10, s 2
+wait, t 3
+move, v 10, r -5, t 10, s 2
+wait, t 3
+

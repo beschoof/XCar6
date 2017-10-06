@@ -1,0 +1,29 @@
+CXar1
+Zeitsteuerung (Begrenzung der maximalen Ausführungszeit eines Kommandos)wird generell an den Arduino gegeben
+Jedes Kommando erhält also wahlweise noch einen Parameter der max. Ausführungszeit in ms.
+
+Der Arduino muss bei Ende jeden Steps einen RC zurückgeben (1, 8, 16: ok, fehler, Abbruch). Erst dann wird der nächste
+Schritt ausgeführt.
+
+- \sdcard\misc\X1_Seben.txt
+- auch rückwärts
+
+Protkoll:
+- payload send to arduino:
+   buffer[0] = plCmdId; // lfd. Nr
+	buffer[1] = plCmd;  // command: 1=drive, 3: stop, 9: ende
+	buffer[2] = plV;    // geschwindigkeit: 0..15  <==> -7..7
+	buffer[3] = plR;    // Radius: 0..15 <==> -7..7
+	buffer[5] = plT;     // max. Ausführungszeit in 100 ms  ( 1 == 100 ms)
+
+			
+- send from arduino:
+	buffer[1] // 
+	 1: ok, 
+	 4: TIMEOUT:
+	 8: Fehler, 
+	12: NO_SIGNAL: 1 Sek kein Signal vom Android
+	16: Abbruch 
+			 
+			
+			
