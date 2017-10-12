@@ -1,5 +1,5 @@
 package com.example.besch.xcar6;
-// XCar1, Stand: 29.8.17
+// XCar1, Stand: 12.10.8.17
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
