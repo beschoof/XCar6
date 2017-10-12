@@ -7,6 +7,8 @@
  * 01.08.2017 bs
  * - Umstrukturieren der defs byte xxx[length] wegen crossing initialization error
  * - Publish: payload = byte[3] 
+ * 
+ * 8.9.17: an die Strings ein \0
  
  */
 
@@ -95,7 +97,7 @@ int P2PMQTT::subscribe(P2PMQTTsubscribe P2PMQTTSubs) {
 }
 
 int P2PMQTT::publish(P2PMQTTpublish pub) {
-  byte msg[] = {0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 };
+  byte msg[] = {0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0};
   msg[0] = pub.fixedHeader;
   msg[1] = pub.length;
   msg[2] = pub.lengthTopicMSB;
@@ -106,7 +108,11 @@ int P2PMQTT::publish(P2PMQTTpublish pub) {
   msg[7] = pub.payload[1];
   msg[8] = pub.payload[2];
   aac.write(msg, 9);
-  Serial.println("P2PMQTT::publish ok");
+  String s = "";
+  for (int i=0; i<9; i++) {
+	s += String(msg[i]) + ", ";  
+  } 
+  Serial.println("P2PMQTT::publish ok : " + s);
   return 0;
 }
 
@@ -119,7 +125,7 @@ bool P2PMQTT::checkTopic(byte* buffer, int type, char* topic) {
   switch(type) {
     case SUBSCRIBE:
 
-    	Serial.print("P2PMQTT::checkTopic auf "); Serial.println(topic);
+      Serial.print("P2PMQTT::checkTopic auf "); Serial.println(topic);
   	  Serial.print("P2PMQTT::checkTopic bufData= ");
       subscribe.fixedHeader = buffer[index++];
       subscribe.length = buffer[index++];
@@ -237,7 +243,7 @@ int P2PMQTT::getType(byte* buffer) {
       firstByte = valUsb;
       int firstByteMSB = valUsb >> 4 & 0x0F;
       if(debug) {
-        Serial.print("P2PMQTT::getType MSG: ");
+        Serial.print("P2PMQTT::getType, MSG: ");
         Serial.println(firstByteMSB);
       }
       switch (firstByteMSB) {
@@ -297,11 +303,16 @@ int P2PMQTT::getType(byte* buffer) {
           // VARIABLE HEADER: protocol name
           while(aac.available() < length) {};
           protocolName = new byte[length];
-          while(length) {
+		  for (int i=0; i<length; i++) {
+            protocolName[i] = (byte) aac.read();
+		  }
+          /*  while(length) {
             valUsb = aac.read();
-            protocolName[sizeof(protocolName)-length] = (char) valUsb;
+            protocolName[sizeof(protocolName)-length] = (byte) valUsb;
+			Serial.println("pn: " + String(valUsb) + " == " + ((char)valUsb));
             length--;
           }
+		  protocolName[sizeof(protocolName)] = 0; */
           connect.protocolName = protocolName;
 
           // VARIABLE HEADER: protocol version
@@ -330,11 +341,9 @@ int P2PMQTT::getType(byte* buffer) {
 
           // VARIABLE HEADER: client ID
           clientId = new byte[length];
-          while(length) {
-            valUsb = aac.read();
-            clientId[sizeof(clientId)-length] = (char) valUsb;
-            length--;
-          }
+		  for (int i=0; i<length; i++) {
+            clientId[i] = (byte) aac.read();
+		  }
           connect.clientId = clientId;
 
           // if debugging, print things to the Serial port in a nice way
@@ -401,21 +410,17 @@ int P2PMQTT::getType(byte* buffer) {
           // VARIABLE HEADER: topic name
           while(aac.available() < length) {};
           topic = new byte[length];
-          while(length) {
-            valUsb = aac.read();
-            topic[sizeof(topic)-length] = (char) valUsb;
-            length--;
-          }
+		  for (int i=0; i<length; i++) {
+            topic[i] = (byte) aac.read();
+		  }
           publish.topic = topic;
 
           // PAYLOAD: payload
           length = publish.length - publish.lengthTopicMSB*256 - publish.lengthTopicLSB - 2;
           payload = new byte[length];
-          while(length) {
-            valUsb = aac.read();
-            payload[sizeof(payload)-length] = (char) valUsb;
-            length--;
-          }
+		  for (int i=0; i<length; i++) {
+            payload[i] = aac.read();
+		  }
           publish.payload = payload;
 
           // if debugging, print things to the Serial port in a nice way
@@ -430,7 +435,12 @@ int P2PMQTT::getType(byte* buffer) {
             Serial.print("Length Topic: "); Serial.println(aux);
             Serial.print("Topic: "); for(int i = 0; i < aux; i++) Serial.write(publish.topic[i]); Serial.println();
             aux = publish.length - publish.lengthTopicMSB*256 - publish.lengthTopicLSB - 2;
-            Serial.print("Payload: "); for(int i = 0; i < aux; i++) Serial.write(publish.payload[i]); Serial.println();
+            Serial.print("Length Payload:: "); Serial.println(aux);
+            Serial.print("Payload: "); 
+			for(int i = 0; i < aux; i++) {
+				Serial.print(publish.payload[i]); Serial.print(", ");
+			}
+				Serial.println();
           }
 
           // update the buffer
@@ -447,9 +457,8 @@ int P2PMQTT::getType(byte* buffer) {
           index+=aux;
 
           if(debug) {
-            // activate the following line for low level debugging
-						// Serial.println("P2PMQTT::getType, buffer nach publish:");
-						// for(int m = 0; m < index; m++) { Serial.print(buffer[m], HEX); Serial.print(" "); }; Serial.println();
+			Serial.println("P2PMQTT::getType, buffer nach publish:");
+			for(int m = 0; m < index; m++) { Serial.print(buffer[m], HEX); Serial.print(" "); }; Serial.println();
           }
           break;
 
@@ -487,11 +496,9 @@ int P2PMQTT::getType(byte* buffer) {
           // VARIABLE HEADER: topic name
           while(aac.available() < length) {};
           topic_s = new byte[length];
-          while(length) {
-            valUsb = aac.read();
-            topic_s[sizeof(topic_s)-length] = (char) valUsb;
-            length--;
-          }
+		  for (int i=0; i<length; i++) {
+            topic_s[i] = (byte) aac.read();
+		  }          
           subscribe.topic = topic_s;
 
           // VARIABLE HEADER: QoS
@@ -566,12 +573,13 @@ int P2PMQTT::getType(byte* buffer) {
 
           // VARIABLE HEADER: topic name
           while(aac.available() < length) {};
-          topic_us = new byte[length];
+          topic_us = new byte[length+1];
           while(length) {
             valUsb = aac.read();
-            topic_us[sizeof(topic_us)-length] = (char) valUsb;
+            topic_us[sizeof(topic_us)-length] = (byte) valUsb;
             length--;
           }
+		  topic_us[sizeof(topic_us)] = 0;
           unsubscribe.topic = topic_us;
 
           // if debugging, print things to the Serial port in a nice way
