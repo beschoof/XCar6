@@ -1,0 +1,17 @@
+# Mission CXar5 for Crawl
+# Syntax zB: move, v3, r0, t10, s1, a 6
+# init t 101: Seben, t 102: Crawler
+# init mit s 26: rotations per meter der Lichtschranke
+# init : 128*r + v => init for gyro (Impulse per grad/sec)
+
+init, t 102, s 26, r 1, v 22
+wait, t 3
+move, v 2, r 0, t 3, s 1
+wait, t 3
+move, v 1, r 0, t 10, s 1
+wait, t 3
+move, v -1, r 5, t 3, s 2
+wait, t 3
+move, v 2, r -5, t 3, s 2
+wait, t 3
+
