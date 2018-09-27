@@ -1,5 +1,6 @@
 package com.example.besch.xcar6.tools;
 
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -18,7 +19,6 @@ public class Tools {
       }
       return s;
    }
-
 
    public void logge(String logTAG, String s, Exception e) {
       logge(logTAG, s);

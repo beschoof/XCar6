@@ -10,6 +10,8 @@
  * 
  * 8.9.17: an die Strings ein \0
  
+ * 10.3.2018: publish: Verlaengern des PayloadArrays
+ 
  */
 
 #include "P2PMQTT.h"
@@ -97,22 +99,22 @@ int P2PMQTT::subscribe(P2PMQTTsubscribe P2PMQTTSubs) {
 }
 
 int P2PMQTT::publish(P2PMQTTpublish pub) {
-  byte msg[] = {0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0};
+  byte msg[14];
   msg[0] = pub.fixedHeader;
   msg[1] = pub.length;
   msg[2] = pub.lengthTopicMSB;
   msg[3] = pub.lengthTopicLSB;
   msg[4] = pub.topic[0];
   msg[5] = pub.topic[1];
-  msg[6] = pub.payload[0];
-  msg[7] = pub.payload[1];
-  msg[8] = pub.payload[2];
-  aac.write(msg, 9);
+  for (int i=0; i<pub.length-4; i++) {
+	  msg[6+i] = pub.payload[i];
+  }
+  aac.write(msg, pub.length+2);
   String s = "";
-  for (int i=0; i<9; i++) {
+  for (int i=0; i< pub.length +2; i++) {
 	s += String(msg[i]) + ", ";  
   } 
-  Serial.println("P2PMQTT::publish ok : " + s);
+  Serial.println("P2PMQTT::publish: ok : " + s);
   return 0;
 }
 

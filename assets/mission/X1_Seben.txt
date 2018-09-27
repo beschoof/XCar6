@@ -1,8 +1,0 @@
-# Mission 7 for Seben
-
-init, t 101,
-wait, t 3
-move, v 2, r -2, t 2
-wait, t 3
-move, v -2, r 2, t 2
-wait, t 3

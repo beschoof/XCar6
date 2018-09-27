@@ -1,12 +1,12 @@
 package com.example.besch.xcar6.mission;
 
-public class MissionObject {
+public class MissionStep {
 
    private String cmd = "";
    private String [] paramKeys = null;
    private int  [] paramVals = null;
 
-   public MissionObject(String cmd, String[] paramKeys, int[] paramVals) {
+   public MissionStep(String cmd, String[] paramKeys, int[] paramVals) {
       this.cmd = cmd;
       this.paramKeys = paramKeys;
       this.paramVals = paramVals;

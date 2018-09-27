@@ -15,10 +15,10 @@
     <Button
         android:layout_width="match_parent"
         android:background="@drawable/mybutton"
-        android:onClick="cmdConnect"
+        android:onClick="cmdTrace"
         android:layout_height="68dp"
-        android:text="@string/connect"
-        android:id="@+id/button_connect"/>
+        android:text="@string/trace"
+        android:id="@+id/button_trace"/>
 
     <Button
         android:id="@+id/button_forward"

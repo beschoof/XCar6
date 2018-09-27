@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 public class Mission {
 
-   private ArrayList<MissionObject> mission;
+   private ArrayList<MissionStep> missionSteps;
    private int i=0;
 
-   public void setMission(ArrayList<MissionObject> mission) {
-      this.mission = mission;
+   public void setMissionSteps(ArrayList<MissionStep> missionSteps) {
+      this.missionSteps = missionSteps;
    }
 
-   public MissionObject getNextStep() {
-      if (i < mission.size()) {
-         return mission.get(i++);
+   public MissionStep getNextStep() {
+      if (i < missionSteps.size()) {
+         return missionSteps.get(i++);
       } else {
          return null;
       }

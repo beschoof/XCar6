@@ -4,16 +4,15 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class MissionUtils {
 
    private int lineNr = 0;
-   private ArrayList<MissionObject> myMission = null;
+   private ArrayList<MissionStep> myMission = null;
    TextView log;
 
-   public ArrayList<MissionObject> getMission(String fileName, TextView aLog) {
+   public ArrayList<MissionStep> getMission(String fileName, TextView aLog) {
       this.log = aLog;
       try {
          parse (new FileReader(fileName));
@@ -26,7 +25,7 @@ public class MissionUtils {
 
    public void parse(Reader reader) {
       try {
-         myMission = new ArrayList<MissionObject>();
+         myMission = new ArrayList<MissionStep>();
          BufferedReader in = new BufferedReader(reader);
          String line = "";
          while ( (line = in.readLine()) != null ) {
@@ -35,7 +34,7 @@ public class MissionUtils {
             if (line.length() > 0 && !line.startsWith("#")) {
                if (line.contains("#"))
                   line = line.substring(0, line.indexOf("#")-1).trim();
-               MissionObject missionObject = parseLine(line);
+               MissionStep missionObject = parseLine(line);
                myMission.add(missionObject);
                log.append(":::parse: " + missionObject.toString());
             }
@@ -46,8 +45,8 @@ public class MissionUtils {
       }
    }
 
-   private MissionObject parseLine (String line) {
-      MissionObject missionObject = null;
+   private MissionStep parseLine (String line) {
+      MissionStep missionObject = null;
       try {
          String cmd = "";
          String [] args = null;
@@ -67,7 +66,7 @@ public class MissionUtils {
             }
          }
 
-         missionObject = new MissionObject (cmd, paramKeys, paramVals);
+         missionObject = new MissionStep(cmd, paramKeys, paramVals);
       } catch (Exception e) {
          log.append("Error: " + e.getMessage() + " in Zeile: " + lineNr + "\n" );
       }

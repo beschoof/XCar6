@@ -1,4 +1,4 @@
-CXar1
+CXar6
 Zeitsteuerung (Begrenzung der maximalen Ausführungszeit eines Kommandos)wird generell an den Arduino gegeben
 Jedes Kommando erhält also wahlweise noch einen Parameter der max. Ausführungszeit in ms.
 

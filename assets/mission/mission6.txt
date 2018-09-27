@@ -1,7 +1,0 @@
-# Mission 6
-
-wait: t=3
-move: v=1; r=-2; a=180; t=5
-wait: t=3
-move: v=1; r=-2; a=180; t=1
-wait: t=3
